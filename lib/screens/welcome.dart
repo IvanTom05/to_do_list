@@ -61,10 +61,10 @@ class _WelcomePageState extends State<WelcomePage> {
       drawer: NavBar(),
       
       body: 
-      Stack(
+      Stack( 
         children: [
           Container(
-            
+            // comment
             padding: const EdgeInsets.symmetric(
               horizontal: 20,
               vertical: 15,
