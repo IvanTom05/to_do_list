@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:to_do_list/colors.dart';
 import 'package:to_do_list/constants/customAppBar.dart';
 import 'package:to_do_list/screens/navbar.dart';
+import 'package:to_do_list/screens/profile.dart';
 import 'package:to_do_list/todo.dart';
 import 'package:to_do_list/todo_item.dart';
 
@@ -13,11 +14,13 @@ class WelcomePage extends StatefulWidget {
   State<WelcomePage> createState() => _WelcomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage> {
+class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin {
   final todosList = ToDo.todoList();
   int _currentState =0;
   List<ToDo> _foundToDo = [];
   final _todoController = TextEditingController();
+
+  bool isSearch = true;
 
   @override
   void initState() {
@@ -31,7 +34,7 @@ class _WelcomePageState extends State<WelcomePage> {
     return   Scaffold( 
       appBar: AppBar( backgroundColor: Colors.white,
     elevation: 10,
-    title: Row(
+      title: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
        
@@ -48,12 +51,25 @@ class _WelcomePageState extends State<WelcomePage> {
           ),
         
         ),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(1000),
-          child: Image.asset(
-            "assets/images/boby2.",
-            height: 50,
-            width: 50,
+        GestureDetector(
+          onDoubleTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: GestureDetector(onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                },
+              child: Image.asset(
+                "assets/images/logo.jpg",
+                height: 50,
+                width: 50,
+              ),
+            ),
           ),
         ),
       ],
@@ -61,105 +77,122 @@ class _WelcomePageState extends State<WelcomePage> {
       drawer: NavBar(),
       
       body: 
-      Stack( 
-        children: [
-          Container(
-            // comment
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 15,
-            ),
-            child: Column(
-              children: [
-                searchBox(),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: 50,
-                          bottom: 20,
-                        ),
-                        child: const Text(
-                          'SCHEDULE',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+      NotificationListener<ScrollUpdateNotification>(
+        onNotification: (scrollNotification) {
+          
+          if (scrollNotification.scrollDelta! > 0) {
+            setState(() {
+              isSearch = false;
+            });
+          } else {
+            setState(() {
+              isSearch = true;
+            });
+          }
+          return true;
+        },
+        child: Stack( 
+          children: [
+            Container(
+              
+              padding: const EdgeInsets.symmetric
+              (
+                horizontal: 0,
+                vertical: 0,
+              ),
+              child: Column(
+                children: [
+                  isSearch?                
+                        searchBox():Text("")!,
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 50,
+                            bottom: 20,
+                          ),
+                          child: const Text(
+                            'SCHEDULE',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      for (ToDo todoo in _foundToDo.reversed)
-                        ToDoItem(
-                          todo: todoo,
-                          onToDoChanged: _handleToDoChange,
-                          onDeleteItem: _deleteToDoItem,
-                        ),
-                    ],
-                  ),
-                )
-              ],
+                        for (ToDo todoo in _foundToDo.reversed)
+                          ToDoItem(
+                            todo: todoo,
+                            onToDoChanged: _handleToDoChange,
+                            onDeleteItem: _deleteToDoItem,
+                          ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Row(children: [
-              Expanded(
-                child: Container(
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Row(children: [
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      bottom: 20,
+                      right: 20,
+                      left: 20,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(0.0, 0.0),
+                          blurRadius: 10.0,
+                          spreadRadius: 0.0,
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(10000000),
+                    ),
+                    child: TextField(
+                      controller: _todoController,
+                      decoration: InputDecoration(
+                          hintText: 'ADD NEW SCHEDULE', border: InputBorder.none ),
+                       
+                    ),
+                  ),
+                ),
+                Container(
                   margin: EdgeInsets.only(
                     bottom: 20,
                     right: 20,
-                    left: 20,
                   ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.grey,
-                        offset: Offset(0.0, 0.0),
-                        blurRadius: 10.0,
-                        spreadRadius: 0.0,
+                  child: ElevatedButton(
+                    child: Text(
+                      '+',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
                       ),
-                    ],
-                    borderRadius: BorderRadius.circular(10000000),
-                  ),
-                  child: TextField(
-                    controller: _todoController,
-                    decoration: InputDecoration(
-                        hintText: 'ADD NEW SCHEDULE', border: InputBorder.none ),
-                     
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  bottom: 20,
-                  right: 20,
-                ),
-                child: ElevatedButton(
-                  child: Text(
-                    '+',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
+                    ),
+                    onPressed: () {
+                      _addToDoItem(_todoController.text);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: tdBlack,
+                      minimumSize: Size(60, 60),
+                      elevation: 10,
                     ),
                   ),
-                  onPressed: () {
-                    _addToDoItem(_todoController.text);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: tdBlack,
-                    minimumSize: Size(60, 60),
-                    elevation: 10,
-                  ),
                 ),
-              ),
-            ]),
-          ),
-        ],
+              ]),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -207,9 +240,9 @@ void _handleToDoChange(ToDo todo) {
   Widget searchBox() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(20),
+      decoration: const BoxDecoration(
+        color:  Colors.white,
+        // borderRadius: BorderRadius.circular(20),
       ),
       child: TextField(
         onChanged: (value) => _runFilter(value),
@@ -225,7 +258,7 @@ void _handleToDoChange(ToDo todo) {
             minWidth: 25,
           ),
           border: InputBorder.none,
-          hintText: 'Search',
+          hintText: 'Search for plan',
           hintStyle: TextStyle(color:Colors.black),
         ),
       ),

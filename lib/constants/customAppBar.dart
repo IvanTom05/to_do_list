@@ -36,7 +36,7 @@ AppBar cusAppBar(context) => AppBar(
         ClipRRect(
           borderRadius: BorderRadius.circular(1000),
           child: Image.asset(
-            "assets/images/boby2.jpg",
+            "assets/images/logo.jpg",
             height: 50,
             width: 50,
           ),

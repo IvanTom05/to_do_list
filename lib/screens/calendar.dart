@@ -36,7 +36,30 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: NavBar(),
-      appBar: cusAppBar(context),
+      // appBar: cusAppBar(context),
+      // appBar:AppBar(title:  Text(
+      //     "Calendar",
+      //     style: TextStyle(
+      //       fontStyle: FontStyle.italic,
+           
+      //       color: Color.fromARGB(255, 0, 0, 0),
+      //       fontWeight: FontWeight.bold,
+      //       fontSize:40,
+            
+      //     ),
+      //   ),) ,
+      appBar: AppBar(
+        title: Text(
+          "Calendar",
+          style: TextStyle(
+            fontStyle: FontStyle.italic,
+            color: Color.fromARGB(255, 0, 0, 0),
+            fontWeight: FontWeight.bold,
+            fontSize: 40,
+          ),
+        ),
+        centerTitle: true, // Center align the title
+      ),
       body: Center(
         child: Column(
           children: [
